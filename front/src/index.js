@@ -5,7 +5,6 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import DataProvider from "./redux/store"
 
-// 4 29.56
 
 ReactDOM.render(
   <React.StrictMode>

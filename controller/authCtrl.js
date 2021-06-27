@@ -11,11 +11,11 @@ const authCtrl = {
 
             //if username is already exist
             const user_name = await Users.findOne({username: newUserName})           
-            if(user_name) return res.status(400).json({msg: "This username is already exist..."})
+            if(user_name) return res.status(400).json({msg: "This username is already exist"})
 
             //if emai is already exist
             const user_email = await Users.findOne({email})
-            if(user_email) return res.status(400).json({msg: "This email is already exist..."})
+            if(user_email) return res.status(400).json({msg: "This email is already exist"})
 
             //if password character is lessthen 6
             if(password.length < 6)

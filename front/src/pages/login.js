@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
-import { Link } from "react-router-dom"
+import React, { useState, useEffect } from 'react'
+import { Link, useHistory } from "react-router-dom"
 import { login as Login } from "../redux/actions/authAction"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 
 
 function login() {
@@ -11,7 +11,13 @@ function login() {
 
     const [typePass, setTypePass] = useState(false)
 
+    const { auth } = useSelector(state => state)
     const dispatch = useDispatch()
+    const history = useHistory()
+
+    useEffect(() => {
+        if (auth.token) history.push("/")
+    }, [auth.token, history])
 
     const handleChangeInput = e => {
         const { name, value } = e.target
@@ -24,7 +30,6 @@ function login() {
     }
 
     return (
-
         <div className="auth_page">
             <form method="get" onSubmit={handleSubmit}>
                 <h3 className="text-uppercase text-center mb-4">Omnish</h3>

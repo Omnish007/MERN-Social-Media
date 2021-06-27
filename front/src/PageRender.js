@@ -24,7 +24,6 @@ function PageRender() {
     else{
         pageName = `${page}`
     }
-    console.log(pageName);
 
     return ganeratePage(pageName)
 }
