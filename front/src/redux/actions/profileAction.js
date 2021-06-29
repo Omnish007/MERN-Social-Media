@@ -1,5 +1,6 @@
 import { GLOBALTYPES } from "./globalType"
 import { getDataAPI } from "../../utils/fetchData"
+import { imageUpload } from "../../utils/imageUploads"
  
 export const PROFILE_TYPES = {
     LOADING: "LOADING",
@@ -27,3 +28,32 @@ export const getProfileUsers = ({users, id, auth}) => async (dispatch) => {
         }
     }
 }
+
+export const updateProfileUser = ({userData, avatar}) => async (dispatch) => {
+
+    if(!userData.fullname)
+    return dispatch({type: GLOBALTYPES.ALERT, payload:{error:"Please Enter your fullname"}})
+
+    if(userData.fullname.length > 25)
+    return dispatch({type: GLOBALTYPES.ALERT, payload:{error:"fullname is too long"}})
+
+    if(userData.story.length > 200)
+    return dispatch({type: GLOBALTYPES.ALERT, payload:{error:"Story is too long"}})
+
+    try {
+        
+        let media
+        dispatch({type: GLOBALTYPES.ALERT, payload:{loading:true}})
+
+        if(avatar) media = await imageUpload([avatar])
+        dispatch({type: GLOBALTYPES.ALERT, payload:{loading:false}})
+
+
+    } catch (error) {
+        dispatch({
+            type:GLOBALTYPES.ALERT, 
+            payload: {error:error.response.data.msg}
+        })
+        
+    }
+} 
