@@ -60,7 +60,7 @@ export const refreshToken = () => async (dispatch) => {
             dispatch({
                 type: GLOBALTYPES.ALERT,
                 payload: {
-                    error: error.response.data.msg
+                    error: error.response?.data.msg
                 }
             })
         }

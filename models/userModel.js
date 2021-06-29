@@ -77,7 +77,7 @@ const userSchema = new mongoose.Schema({
         },
     ],
 
-    followeing: [
+    following: [
         {
             type: mongoose.Types.ObjectId,
             ref:"user"
