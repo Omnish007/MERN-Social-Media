@@ -13,11 +13,12 @@ const EditProfile = ({ setOnEdit }) => {
 
     const [userData, setUserData] = useState(initialState)
 
-    const { fullname, mobile, address, website, story } = userData
+    const { fullname, mobile, address, website, story, gender } = userData
 
     const [avatar, setAvatar] = useState("")
 
     const { auth, theme } = useSelector(state => state)
+    
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -46,7 +47,7 @@ const EditProfile = ({ setOnEdit }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        dispatch(updateProfileUser({userData, avatar}))
+        dispatch(updateProfileUser({userData, avatar, auth}))
     }
 
     return (
@@ -58,7 +59,7 @@ const EditProfile = ({ setOnEdit }) => {
 
             <form onSubmit={handleSubmit}>
                 <div className="info_avatar">
-                    <img src={avatar ? URL.createObjectURL(avatar) : auth.user.avtar} alt="avatar" className="supper-avatar" style={{ filter: theme ? "invert(1)" : "invert(0)" }} />
+                    <img src={avatar ? URL.createObjectURL(avatar) : auth.user.avatar} alt="avatar" className="supper-avatar" style={{ filter: theme ? "invert(1)" : "invert(0)" }} />
 
                     <span>
                         <i className="fas fa-camera" aria-hidden="false"/>
@@ -120,7 +121,7 @@ const EditProfile = ({ setOnEdit }) => {
 
                 <label htmlFor="gender">Gender</label>
                 <div className="input_group-prepend px-0 mb-4">
-                    <select name="gender" id="gender"
+                    <select name="gender" id="gender" value={gender}
                     className="custom-select tect-capitalize"
                     onChange={handleInput}>
                         <option value="male">Male</option>

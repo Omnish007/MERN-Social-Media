@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
         required: true,
     },
 
-    avtar: {
+    avatar: {
         type: String,
         default: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn.iconscout.com%2Ficon%2Ffree%2Fpng-256%2Faccount-profile-avatar-man-circle-round-user-30452.png&f=1&nofb=1"
     },

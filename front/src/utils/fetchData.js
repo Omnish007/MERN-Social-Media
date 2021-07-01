@@ -13,7 +13,7 @@ export const postDataAPI = async (url, post, token) =>{
         headers: {Authorization: token}
     })
 
-    return res
+    return res 
 }
 
 export const putDataAPI = async (url, post, token) =>{
