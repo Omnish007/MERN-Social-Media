@@ -1,4 +1,5 @@
 import { POST_TYPES } from "../actions/postAction"
+import { EditData } from "../actions/globalType"
 
 const initialState = {
     loading: false,
@@ -13,7 +14,7 @@ const postReducer = (state = initialState, action) => {
         case POST_TYPES.CREATE_POST:
             return {
                 ...state,
-                posts: [...state.posts, action.payload]
+                posts: [action.payload, ...state.posts]
             }
 
         case POST_TYPES.LOADING_POST:
@@ -22,11 +23,17 @@ const postReducer = (state = initialState, action) => {
                 loading: action.payload
             }
 
-        case POST_TYPES.GEY_POSTS:
+        case POST_TYPES.GET_POSTS:
             return {
                 ...state,
                 posts: action.payload.posts,
                 result: action.payload.result
+            }
+
+        case POST_TYPES.UPDATE_POSTS:
+            return {
+                ...state,
+                posts: EditData(state.posts, action.payload._id, action.payload),
             }
 
         default:
