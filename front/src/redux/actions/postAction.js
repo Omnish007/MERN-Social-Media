@@ -42,7 +42,7 @@ export const getPosts = (token) => async (dispatch) => {
         const res = await getDataAPI("posts", token)
         
         dispatch({ 
-            type: POST_TYPES.GET_POSTS,
+            type: POST_TYPES.GET_POSTS, 
             payload: res.data 
         })
 

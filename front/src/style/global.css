@@ -64,6 +64,10 @@ img{
 @import url("./status_modal.css");
 
 
+/* ----------COMMENT--------- */
+@import url("./comment.css");
+
+
 .mode{
     width: 100%;
     height: 100vh;
