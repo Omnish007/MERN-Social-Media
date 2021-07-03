@@ -21,7 +21,7 @@ const inputComment = ({ children, post }) => {
             user: auth.user,
             createdAt : new Date(). toISOString()
         }
-        dispatch(createCommnet(post, newComment, auth))
+        dispatch(createCommnet({post, newComment, auth}))
     }
 
     return (
