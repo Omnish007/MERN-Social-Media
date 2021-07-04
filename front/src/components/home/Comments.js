@@ -5,8 +5,9 @@ const Comments = ({ post }) => {
 
     const [comments, setComments] = useState([])
     const [showcomments, setShowComments] = useState([])
-
     const [next, setNext]= useState(2)
+
+    const [replyComments, setReplyComments] = useState([])
 
     useEffect(() => {
         
@@ -16,11 +17,19 @@ const Comments = ({ post }) => {
 
     }, [post.comments, next])
 
+    useEffect(() => {
+        
+        const newRep = post.comments.filter(cm => cm.reply)
+        setReplyComments(newRep)
+
+    }, [post.comments])
+
     return (
         <div className="comments">
             {
-                showcomments.map(comment => (
-                    <CommentDisplay key={comment._id} comment={comment} post={post} />
+                showcomments.map((comment, index) => (
+                    <CommentDisplay key={index} comment={comment} post={post} 
+                    replyCm={replyComments.filter(item => item.reply === comment._id)} />
                 ))
             }
 
