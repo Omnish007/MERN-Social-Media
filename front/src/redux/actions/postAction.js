@@ -7,6 +7,7 @@ export const POST_TYPES = {
     LOADING_POST: "LOADING_POST",
     GET_POSTS: "GET_POSTS",
     UPDATE_POSTS: "UPDATE_POSTS",
+    GET_POST: "GET_POST"
 }
 
 export const createPost = ({ content, images, auth }) => async (dispatch) => {
@@ -22,7 +23,7 @@ export const createPost = ({ content, images, auth }) => async (dispatch) => {
 
         const res = await postDataAPI("posts", { content, images: media }, auth.token)
 
-        dispatch({ type: POST_TYPES.CREATE_POST, payload:{...res.data.newPost, user:auth.user} })
+        dispatch({ type: POST_TYPES.CREATE_POST, payload: { ...res.data.newPost, user: auth.user } })
 
         dispatch({ type: GLOBALTYPES.ALERT, payload: { loading: false } })
 
@@ -40,10 +41,10 @@ export const getPosts = (token) => async (dispatch) => {
 
         dispatch({ type: POST_TYPES.LOADING_POST, payload: true })
         const res = await getDataAPI("posts", token)
-        
-        dispatch({ 
-            type: POST_TYPES.GET_POSTS, 
-            payload: res.data 
+
+        dispatch({
+            type: POST_TYPES.GET_POSTS,
+            payload: res.data
         })
 
         dispatch({ type: POST_TYPES.LOADING_POST, payload: false })
@@ -51,7 +52,7 @@ export const getPosts = (token) => async (dispatch) => {
     } catch (error) {
         dispatch({
             type: GLOBALTYPES.ALERT,
-            payload: { error: error.response.data.msg }
+            payload: { error: error.response?.data.msg }
         })
     }
 }
@@ -63,11 +64,11 @@ export const updatePost = ({ content, images, auth, status }) => async (dispatch
     const imgNewUrl = images.filter(img => !img.url)
     const imgOldUrl = images.filter(img => img.url)
 
-    if(status.content === content
+    if (status.content === content
         && imgNewUrl.length === 0
-        && imgOldUrl.length === status.images.length    
-    ) return ;
-     
+        && imgOldUrl.length === status.images.length
+    ) return;
+
 
     try {
 
@@ -77,8 +78,8 @@ export const updatePost = ({ content, images, auth, status }) => async (dispatch
             media = await imageUpload(imgNewUrl)
         }
 
-        const res = await patchDataAPI(`post/${status._id}`, { 
-            content, images: [...imgOldUrl, ...media] 
+        const res = await patchDataAPI(`post/${status._id}`, {
+            content, images: [...imgOldUrl, ...media]
         }, auth.token)
 
 
@@ -97,8 +98,8 @@ export const updatePost = ({ content, images, auth, status }) => async (dispatch
 
 export const likePost = ({ post, auth }) => async (dispatch) => {
 
-    const newPost = {...post, likes: [...post.likes, auth.user]}
-    dispatch({type: POST_TYPES.UPDATE_POSTS, payload: newPost}) 
+    const newPost = { ...post, likes: [...post.likes, auth.user] }
+    dispatch({ type: POST_TYPES.UPDATE_POSTS, payload: newPost })
 
     try {
 
@@ -115,8 +116,8 @@ export const likePost = ({ post, auth }) => async (dispatch) => {
 
 export const unlikePost = ({ post, auth }) => async (dispatch) => {
 
-    const newPost = {...post, likes: post.likes.filter(like => like._id !== auth.user._id)}
-    dispatch({type: POST_TYPES.UPDATE_POSTS, payload: newPost}) 
+    const newPost = { ...post, likes: post.likes.filter(like => like._id !== auth.user._id) }
+    dispatch({ type: POST_TYPES.UPDATE_POSTS, payload: newPost })
 
     try {
 
@@ -128,4 +129,24 @@ export const unlikePost = ({ post, auth }) => async (dispatch) => {
             payload: { error: error.response.data.msg }
         })
     }
+}
+
+
+export const getPost = ({ detailPost, id, auth }) => async (dispatch) => {
+
+    if (detailPost.every(post => post._id !== id)) {
+
+        try {
+
+            const res = await getDataAPI(`post/${id}`, auth.token)
+            dispatch({ type: POST_TYPES.GET_POST, payload: res.data.post })
+
+        } catch (error) {
+            dispatch({
+                type: GLOBALTYPES.ALERT,
+                payload: { error: error.response.data.msg }
+            })
+        }
+    }
+
 }
