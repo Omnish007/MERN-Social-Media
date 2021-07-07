@@ -8,7 +8,8 @@ export const PROFILE_TYPES = {
     FOLLOW: "FOLLOW",
     UNFOLLOW: "UNFOLLOW",
     GET_ID: "GET_PROFILE_ID",
-    GET_POSTS: "GET_PROFILE_POSTS"
+    GET_POSTS: "GET_PROFILE_POSTS",
+    UPDATE_POST: "UPDATE_PROFILE_POSTS",
 }
 
 export const getProfileUsers = ({ id, auth }) => async (dispatch) => {
@@ -19,15 +20,16 @@ export const getProfileUsers = ({ id, auth }) => async (dispatch) => {
         dispatch({ type: PROFILE_TYPES.LOADING, payload: true })
 
         const res = getDataAPI(`/user/${id}`, auth.token)
+        const res1 = getDataAPI(`/user_posts/${id}`, auth.token)
+
         const users = await res;
+        const posts = await res1;
 
         dispatch({
             type: PROFILE_TYPES.GET_USER,
             payload: users.data
         })
 
-        const res1 = getDataAPI(`/user_posts/${id}`, auth.token)
-        const posts = await res1;
 
         dispatch({
             type: PROFILE_TYPES.GET_POSTS,
@@ -39,7 +41,7 @@ export const getProfileUsers = ({ id, auth }) => async (dispatch) => {
     } catch (error) {
         dispatch({
             type: GLOBALTYPES.ALERT,
-            payload: { error: error.response?.data.msg }
+            payload: { error: error.response.data.msg }
         })
     }
 

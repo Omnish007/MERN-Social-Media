@@ -2,8 +2,8 @@ import { PROFILE_TYPES } from "../actions/profileAction"
 import { EditData } from "../actions/globalType"
 
 const initialState = {
-    ids: [],
     loading: false,
+    ids: [],
     users: [],
     posts: []
 }
@@ -45,6 +45,12 @@ const profileReducer = (state = initialState, action) => {
             return {
                 ...state,
                 posts: [...state.posts, action.payload]
+            }
+
+        case PROFILE_TYPES.UPDATE_POST:
+            return {
+                ...state,
+                posts: EditData(state.posts, action.payload._id, action.payload)
             }
 
         default:

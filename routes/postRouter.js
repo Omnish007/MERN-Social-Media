@@ -4,7 +4,7 @@ const auth = require("../middleware/auth")
 
 router.route("/posts")
     .post(auth, postCtrl.createPost)
-    .get(auth, postCtrl.getPost)
+    .get(auth, postCtrl.getPosts)
 
 router.route("/post/:id")
     .patch(auth, postCtrl.updatePost)
@@ -14,5 +14,7 @@ router.patch("/post/:id/like", auth, postCtrl.likePost)
 router.patch("/post/:id/unlike", auth, postCtrl.unlikePost)
 
 router.get("/user_posts/:id", auth, postCtrl.getUserPosts)
+ 
+router.get("/post_discover", auth, postCtrl.getPostDiscover)
 
 module.exports = router

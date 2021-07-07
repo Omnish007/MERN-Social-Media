@@ -50,6 +50,7 @@ const CommentCard = ({ children, comment, post, commentId }) => {
         setLoadLikes(true)
         await dispatch(likeComment({comment, post, auth}))
         setLoadLikes(false)
+
     }
 
     const handleUnLike = async () => {
@@ -73,7 +74,7 @@ const CommentCard = ({ children, comment, post, commentId }) => {
 
     return (
         <div className="comment_card mt-2" style={styleCard}>
-            <Link to={`/profile/${comment.user._id}`} className="d-flex text-dark">
+            <Link to={`profile/${comment.user._id}`} className="d-flex text-dark">
                 <Avatar src={comment.user.avatar} size="small-avatar" />
                 <h6 className="mx-1">{comment.user.username}</h6>
             </Link>
@@ -156,7 +157,7 @@ const CommentCard = ({ children, comment, post, commentId }) => {
             {
                 onReply &&
                 <InputComment post={post} onReply={onReply} setOnReply={setOnReply}>
-                    <Link to={`profile/${onReply.user._id}`} className="mr-1">
+                    <Link to={`/profile/${onReply.user._id}`} className="mr-1">
                         @{onReply.user.username}:
                     </Link>
                 </InputComment>

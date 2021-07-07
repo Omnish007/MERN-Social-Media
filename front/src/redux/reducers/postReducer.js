@@ -27,13 +27,14 @@ const postReducer = (state = initialState, action) => {
             return {
                 ...state,
                 posts: action.payload.posts,
-                result: action.payload.result
+                result: action.payload.result,
+                page: action.payload.page
             }
 
         case POST_TYPES.UPDATE_POSTS:
             return {
                 ...state,
-                posts: EditData(state.posts, action.payload._id, action.payload),
+                posts: EditData(state.posts, action.payload._id, action.payload)
             }
 
         default:

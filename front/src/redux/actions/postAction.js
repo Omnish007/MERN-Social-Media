@@ -44,7 +44,7 @@ export const getPosts = (token) => async (dispatch) => {
 
         dispatch({
             type: POST_TYPES.GET_POSTS,
-            payload: res.data
+            payload: {...res.data, page:2}
         })
 
         dispatch({ type: POST_TYPES.LOADING_POST, payload: false })
@@ -52,7 +52,7 @@ export const getPosts = (token) => async (dispatch) => {
     } catch (error) {
         dispatch({
             type: GLOBALTYPES.ALERT,
-            payload: { error: error.response?.data.msg }
+            payload: { error: error.response.data.msg }
         })
     }
 }
@@ -90,7 +90,7 @@ export const updatePost = ({ content, images, auth, status }) => async (dispatch
     } catch (error) {
         dispatch({
             type: GLOBALTYPES.ALERT,
-            payload: { error: error.response.data.msg }
+            payload: { error: error.response?.data.msg }
         })
     }
 }
