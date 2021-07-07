@@ -22,7 +22,9 @@ const home = () => {
                 }
             </div>
             
-            <div className="col-md-4"></div>
+            <div className="col-md-4">
+                righ Sidebar
+            </div>
         </div>
     )
 }
