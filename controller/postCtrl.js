@@ -52,7 +52,7 @@ const postCtrl = {
             ).paginating()
 
             const posts = await features.query.sort("-createdAt")
-                .populate("user likes", "avatar username fullname")
+                .populate("user likes", "avatar username fullname followers")
                 .populate({
                     path: "comments ",
                     populate: {
@@ -241,6 +241,26 @@ const postCtrl = {
             if (!save) return res.status(400).json({ msg: "This user does not exist" })
 
             res.json({ msg: "UnSaved Post!" })
+
+        } catch (error) {
+            return res.status(500).json({ msg: error.message })
+
+        }
+    },
+
+    getSavePosts: async (req, res) => {
+        try {
+
+            const features = new APIfeatures(Posts.find({
+                _id : {$in: req.user.saved}
+            }), req.query).paginating()
+
+            const savePosts = await features.query.sort("-createdAt")
+
+            res.json({
+                savePosts,
+                result: savePosts.length
+            })
 
         } catch (error) {
             return res.status(500).json({ msg: error.message })

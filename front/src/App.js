@@ -17,6 +17,11 @@ import { refreshToken } from "./redux/actions/authAction"
 import { getPosts } from "./redux/actions/postAction"
 import { getSuggestions } from "./redux/actions/suggestionAction"
 
+import io from "socket.io-client"
+import { GLOBALTYPES } from "./redux/actions/globalType";
+import SocketClient from "./SocketClient"
+
+//30 32.10
 
 function App() {
 
@@ -25,6 +30,10 @@ function App() {
 
   useEffect(() => {
     dispatch(refreshToken())
+
+    const socket = io()
+    dispatch({type: GLOBALTYPES.SOCKET, payload: socket})
+    return () => socket.close()
   }, [dispatch])
 
 
@@ -45,11 +54,12 @@ function App() {
 
           {auth.token && <Header />}
           {status && <StatusModal />}
+          {auth.token && <SocketClient />}
 
           <Route exact path="/" component={auth.token ? Home : Login} />
           <Route exact path="/register" component={Register} />
 
-          <div style={{marginBottom:"60px"}}>
+          <div className="wrap_page">
             <PrivateRouter exact path="/:page" component={PageRender} />
             <PrivateRouter exact path="/:page/:id" component={PageRender} />
           </div>

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import Info from "../../components/profile/Info"
 import Posts from "../../components/profile/Posts"
+import Saved from "../../components/profile/Saved"
+
 import { useSelector, useDispatch } from "react-redux"
 import LoadIcon from "../../images/loading.gif"
 import { getProfileUsers } from "../../redux/actions/profileAction"
@@ -40,7 +42,7 @@ const Profile = () => {
                     : <>
                         {
                             saveTab
-                            ? <Saved auth={auth} profile={profile} dispatch={dispatch} id={id} />
+                            ? <Saved auth={auth} dispatch={dispatch} />
                             : <Posts auth={auth} profile={profile} dispatch={dispatch} id={id} />
                         }
                     </>

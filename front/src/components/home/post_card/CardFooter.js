@@ -14,11 +14,13 @@ const CardFooter = ({ post }) => {
 
     const [isShare, steIsShare] = useState(false)
 
-    const { auth, theme } = useSelector(state => state)
+    const { auth, theme, socket } = useSelector(state => state)
     const dispatch = useDispatch()
 
     const [saved, setSaved] = useState(false)
+    const [saveLoad, setSaveLoad] = useState(false)
 
+    //likes
     useEffect(() => {
         if (post.likes.find(like => like._id === auth.user._id)) {
             setIsLike(true)
@@ -33,7 +35,7 @@ const CardFooter = ({ post }) => {
         if (loadLike) return
 
         setLoadLike(true)
-        await dispatch(likePost({ post, auth }))
+        await dispatch(likePost({ post, auth, socket }))
         setLoadLike(false)
     }
 
@@ -41,10 +43,11 @@ const CardFooter = ({ post }) => {
         if (loadLike) return
 
         setLoadLike(true)
-        await dispatch(unlikePost({ post, auth }))
+        await dispatch(unlikePost({ post, auth, socket }))
         setLoadLike(false)
     }
 
+    //saved
     useEffect(() => {
 
         if (auth.user.saved.find(id => id === post._id)) {
@@ -54,6 +57,22 @@ const CardFooter = ({ post }) => {
             setSaved(false)
         }
     }, [auth.user.saved, post._id])
+
+    const handleSavePost = async () => {
+        if (saveLoad) return
+
+        setSaveLoad(true)
+        await dispatch(savePost({ post, auth }))
+        setSaveLoad(false)
+    }
+
+    const handleUnSavePost = async () => {
+        if (saveLoad) return
+
+        setSaveLoad(true)
+        await dispatch(unSavePost({ post, auth }))
+        setSaveLoad(false)
+    }
 
     return (
         <div className="card_footer">
@@ -73,8 +92,8 @@ const CardFooter = ({ post }) => {
                 </div>
                 {
                     saved
-                        ? <i className="fas fa-bookmark text-info" onClick={() => dispatch(unSavePost({ post, auth }))} />
-                        : <i className="far fa-bookmark" onClick={() => dispatch(savePost({ post, auth }))} />
+                        ? <i className="fas fa-bookmark text-info" onClick={handleUnSavePost} />
+                        : <i className="far fa-bookmark" onClick={handleSavePost} />
                 }
 
             </div>
