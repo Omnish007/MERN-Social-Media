@@ -70,6 +70,13 @@ const userSchema = new mongoose.Schema({
         default: ""
     },
 
+    saved: [
+        {
+            type: mongoose.Types.ObjectId,
+            ref:"user"
+        },
+    ],
+
     followers: [
         {
             type: mongoose.Types.ObjectId,

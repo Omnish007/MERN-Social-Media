@@ -1,5 +1,6 @@
 const Posts = require("../models/postModel")
 const Comments = require("../models/commentModel")
+const Users = require("../models/userModel")
 
 class APIfeatures {
     constructor(query, queryString) {
@@ -173,13 +174,14 @@ const postCtrl = {
     getPostDiscover: async (req, res) => {
         try {
 
-            const features = new APIfeatures(
-                Posts.find({
-                    user: { $nin: [...req.user.following, req.user._id] }
-                }), req.query
-            ).paginating()
+            const newArr = [...req.user.following, req.user._id]
 
-            const posts = await features.query.sort("-createdAt")
+            const num = req.query.num || 9
+
+            const posts = await Posts.aggregate([
+                { $match: { user: { $nin: newArr } } },
+                { $sample: { size: Number(num) } },
+            ])
 
             res.json({
                 msg: "Success!",
@@ -200,6 +202,45 @@ const postCtrl = {
             await Comments.deleteMany({ id: { $in: post.comments } })
 
             res.json({msg:"Delete Success!"})
+
+        } catch (error) {
+            return res.status(500).json({ msg: error.message })
+
+        }
+    },
+
+    savePost: async (req, res) => {
+        try {
+
+            const user = await Users.find({ _id: req.user._id, saved: req.params.id })
+            if (user.length > 0) return res.status(400).json({ msg: "You saved this post" })
+
+            const save = await Users.findOneAndUpdate(({ _id: req.user._id }), {
+                $push: { saved: req.params.id }
+            }, { new: true })
+
+            if (!save) return res.status(400).json({ msg: "This user does not exist" })
+
+            res.json({ msg: "Saved Post!" })
+
+        } catch (error) {
+            return res.status(500).json({ msg: error.message })
+
+        }
+    },
+
+    unSavePost: async (req, res) => {
+        try {
+
+           
+
+            const save = await Users.findOneAndUpdate(({ _id: req.user._id }), {
+                $pull: { saved: req.params.id }
+            }, { new: true })
+
+            if (!save) return res.status(400).json({ msg: "This user does not exist" })
+
+            res.json({ msg: "UnSaved Post!" })
 
         } catch (error) {
             return res.status(500).json({ msg: error.message })
