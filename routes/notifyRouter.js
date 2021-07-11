@@ -8,5 +8,9 @@ router.delete("/notify/:id", auth , notifyCtrl.removeNotify)
 
 router.get("/notifies", auth , notifyCtrl.getNotifies)
 
+router.patch("/isReadNotify/:id", auth , notifyCtrl.isReadNotify)
 
-module.exports = router
+router.delete("/deleteAllNotify", auth , notifyCtrl.deleteAllNotifies)
+
+
+module.exports = router 
