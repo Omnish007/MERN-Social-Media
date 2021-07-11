@@ -122,6 +122,17 @@ export const likePost = ({ post, auth, socket }) => async (dispatch) => {
 
         await patchDataAPI(`post/${post._id}/like`, null, auth.token)
 
+        //notify
+        const msg = {
+            id: auth.user._id,
+            text: "Like your post",
+            recipients: [post.user._id],
+            url: `/post/${post._id}`,
+            content: post.content,
+            image: post.images[0].url
+        }
+
+        dispatch(createNotify({ msg, auth, socket }))
 
     } catch (error) {
         dispatch({
@@ -143,6 +154,15 @@ export const unlikePost = ({ post, auth, socket }) => async (dispatch) => {
 
         await patchDataAPI(`post/${post._id}/unlike`, null, auth.token)
 
+        //notify
+        const msg = { 
+            id: auth.user._id,
+            text: "Like your post",
+            recipients: [post.user._id],
+            url: `/post/${post._id}`, 
+        }
+
+        dispatch(removeNotify({ msg, auth, socket }))
 
     } catch (error) {
         dispatch({
@@ -157,7 +177,7 @@ export const deletePost = ({ post, auth, socket }) => async (dispatch) => {
 
     dispatch({ type: POST_TYPES.DELETE_POST, payload: post })
 
-try {
+    try {
 
         const res = await deleteDataAPI(`post/${post._id}`, auth.token)
 

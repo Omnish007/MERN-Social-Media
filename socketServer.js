@@ -2,11 +2,12 @@ let users = []
 
 const SocketServer = (socket) => {
 
-    //connect-disconnect
+    //connect
     socket.on("joinUser", id => {
         users.push({id, socketId: socket.id})
     })
 
+    //disconnect
     socket.on("disconnect", () => {
         users = users.filter(user => user.socketId !== socket.id)
     })
@@ -70,6 +71,32 @@ const SocketServer = (socket) => {
         const user = users.find(user => user.id === newUser._id)
         user && socket.to(`${user.socketId}`).emit("unFollowToClient", newUser)
     })
+ 
+    // notification
+    socket.on("createNotify", msg => {
+
+        const clients = users.filter(user => msg.recipients.includes(user.id))
+
+        if(clients.length > 0){
+            clients.forEach(client => {
+                socket.to(`${client.socketId}`).emit("createNotifyToClient", msg)
+            })
+        }
+    })
+
+    //remove notification
+    socket.on("removeNotify", msg => {
+
+        const clients = users.filter(user => msg.recipients.includes(user.id))
+
+        if(clients.length > 0){
+            clients.forEach(client => {
+                socket.to(`${client.socketId}`).emit("removeNotifyToClient", msg)
+            })
+        }
+    })
+
+
 }
 
 module.exports = SocketServer
