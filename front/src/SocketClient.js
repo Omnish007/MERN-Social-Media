@@ -111,11 +111,20 @@ const SocketClient = () => {
         return () => socket.off("removeNotifyToClient")
     }, [socket, dispatch])
 
+    //add message
+    useEffect(() => {
+        socket.on("addMessageToClient", msg => {
+            dispatch({type: NOTIFY_TYPES.REMOVE_NOTIFY, payload: msg})
+        })
+
+        return () => socket.off("addMessageToClient")
+    }, [socket, dispatch])
+
 
 
     return (
         <>
-            <audio controls ref={audioRef}>
+            <audio controls ref={audioRef} style={{display:"none"}}>
                 <source src={audiobell} type="audio/mp3"/>
             </audio>
         </>

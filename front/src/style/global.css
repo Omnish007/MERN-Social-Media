@@ -71,6 +71,18 @@ img{
 /* ----------POST_THUMBNAIL--------- */
 @import url("./post_thumb.css");
 
+
+/* ----------MESSAGE--------- */
+@import url("./message.css");
+
+
+/* ----------ICONS--------- */
+@import url("./icons.css");
+
+
+
+
+
 /* ---------------RESPONSIVE----------- */
 
 @media (max-width:768px) {
@@ -112,6 +124,10 @@ img{
 
     .wrap_page{
         margin-bottom: 60px;
+    }
+    
+    .message{
+        height: calc(100vh - 150px);
     }
 }
 

@@ -11,7 +11,7 @@ import InputComment from '../InputComment'
 
 const CommentCard = ({ children, comment, post, commentId }) => {
 
-    const { auth } = useSelector(state => state)
+    const { auth, theme } = useSelector(state => state)
     const dispatch = useDispatch()
 
     const [content, setContent] = useState("")
@@ -27,44 +27,44 @@ const CommentCard = ({ children, comment, post, commentId }) => {
         setContent(comment.content)
         setIsLike(false)
         setOnReply(false)
-        if(comment.likes.find(like => like._id === auth.user._id)){
+        if (comment.likes.find(like => like._id === auth.user._id)) {
             setIsLike(true)
         }
     }, [comment, auth.user._id])
 
 
     const handleUpdate = () => {
-        if(comment.content !== content){
-            dispatch(updateComment({comment, post, content, auth}))
+        if (comment.content !== content) {
+            dispatch(updateComment({ comment, post, content, auth }))
             setOnEdit(false)
         }
-        else{
+        else {
             setOnEdit(false)
         }
     }
 
     const handleLike = async () => {
-        if(loadLikes) return
+        if (loadLikes) return
         setIsLike(true)
 
         setLoadLikes(true)
-        await dispatch(likeComment({comment, post, auth}))
+        await dispatch(likeComment({ comment, post, auth }))
         setLoadLikes(false)
 
     }
 
     const handleUnLike = async () => {
-        if(loadLikes) return
+        if (loadLikes) return
         setIsLike(false)
 
         setLoadLikes(true)
-        await dispatch(unlikeComment({comment, post, auth}))
+        await dispatch(unlikeComment({ comment, post, auth }))
         setLoadLikes(false)
     }
 
     const handleReply = async () => {
-        if(onReply) return setOnReply(false)
-        setOnReply({...comment, commentId})
+        if (onReply) return setOnReply(false)
+        setOnReply({ ...comment, commentId })
     }
 
     const styleCard = {
@@ -74,13 +74,17 @@ const CommentCard = ({ children, comment, post, commentId }) => {
 
     return (
         <div className="comment_card mt-2" style={styleCard}>
-            <Link to={`profile/${comment.user._id}`} className="d-flex text-dark">
+            <Link to={`/profile/${comment.user._id}`} className="d-flex text-dark">
                 <Avatar src={comment.user.avatar} size="small-avatar" />
                 <h6 className="mx-1">{comment.user.username}</h6>
             </Link>
 
             <div className="comment_content">
-                <div className="flex-fill">
+                <div className="flex-fill"
+                    style={{
+                        filter: theme ? "invert(1)" : "invert(0)",
+                        color: theme ? "white" : "#111",
+                    }}>
 
                     {
                         onEdit
@@ -123,22 +127,22 @@ const CommentCard = ({ children, comment, post, commentId }) => {
 
                         {
                             onEdit
-                            ?   <>
+                                ? <>
                                     <small className="font-weight-bold mr-3"
                                         onClick={handleUpdate}
                                     >
                                         update
-                                    </small> 
+                                    </small>
 
-                                    <small className="font-weight-bold mr-3" 
+                                    <small className="font-weight-bold mr-3"
                                         onClick={() => setOnEdit(false)}>
                                         cancel
                                     </small>
                                 </>
 
-                            :   <small className="font-weight-bold mr-3"
-                                onClick={handleReply}>
-                                    { onReply ? "cancel" : "reply"}
+                                : <small className="font-weight-bold mr-3"
+                                    onClick={handleReply}>
+                                    {onReply ? "cancel" : "reply"}
                                 </small>
                         }
 
@@ -148,7 +152,7 @@ const CommentCard = ({ children, comment, post, commentId }) => {
                 </div>
 
                 <div className="d-flex align-items-center mx-2" style={{ cursor: "pointer" }}>
-                    <CommentMenu post={post} comment={comment}  setOnEdit={setOnEdit} />
+                    <CommentMenu post={post} comment={comment} setOnEdit={setOnEdit} />
                     <LikeButton isLike={isLike} handleLike={handleLike} handleUnLike={handleUnLike} />
                 </div>
 

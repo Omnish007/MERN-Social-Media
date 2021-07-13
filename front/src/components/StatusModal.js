@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { GLOBALTYPES } from '../redux/actions/globalType'
 import { createPost, updatePost } from "../redux/actions/postAction"
+import Icons from './Icons'
+import { imageShow, videoShow } from "../utils/mediaShow"
 
 const StatusModal = () => {
 
@@ -24,8 +26,8 @@ const StatusModal = () => {
         files.forEach(file => {
             if (!files) return err = "File does not exist"
 
-            if (file.type !== "image/jpeg" && file.type !== "image/png") {
-                return err = "Please Select JPEG or PNG format image"
+            if (file.size > 1024 * 1024 * 5) {
+                return err = "Image/Video size limit is 5MB"
             }
 
             return newImages.push(file)
@@ -104,7 +106,6 @@ const StatusModal = () => {
 
     }, [status])
 
-
     return (
         <div className="status_modal">
             <form onSubmit={handleSubmit}>
@@ -123,21 +124,41 @@ const StatusModal = () => {
                     <textarea name="content" value={content}
                         placeholder={`${auth.user.username}, what are you thinking?`}
                         onChange={e => setContent(e.target.value)}
+                        style={{
+                            filter: theme ? "invert(1)" : "invert(0)",
+                            color: theme ? "white" : "#111",
+                            background: theme ? "rgba(0,0,0,.03)" : "",
+                        }}
                     />
+
+                    <div className="d-flex">
+                        <div className="flex-fill"></div>
+                        <Icons content={content} setContent={setContent} theme={theme} />
+                    </div>
 
                     <div className="show_images">
                         {
                             images.map((img, index) => (
                                 <div key={index} id="file_img">
-                                    <img src=
-                                        {
-                                            img.camera
-                                                ? img.camera
-                                                : img.url ? img.url : URL.createObjectURL(img)
-                                        }
-                                        alt="images" className="img-thumbnail"
-                                        style={{ filter: theme ? "invert(1)" : "invert(0)" }}
-                                    />
+                                    {
+                                        img.camera ? imageShow(img.camera, theme)
+                                            : img.url
+                                                ? <>
+                                                    {
+                                                        img.url.match(/video/i)
+                                                            ? videoShow(img.url, theme)
+                                                            : imageShow(img.url, theme)
+                                                    }
+                                                </>
+                                                : <>
+                                                    {
+                                                        img.type.match(/video/i)
+                                                            ? videoShow(URL.createObjectURL(img), theme)
+                                                            : imageShow(URL.createObjectURL(img), theme)
+                                                    }
+                                                </>
+
+                                    }
                                     <span onClick={() => deleteImages(index)}>&times;</span>
                                 </div>
                             ))
@@ -166,7 +187,7 @@ const StatusModal = () => {
                                     <div className="file_upload">
                                         <i className="fas fa-image" />
                                         <input type="file" name="file" id="file"
-                                            multiple accept="image/*" onChange={handleChangeImages}
+                                            multiple accept="image/*, video/*" onChange={handleChangeImages}
                                         />
                                     </div>
                                 </>
