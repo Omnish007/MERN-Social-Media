@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { getDataAPI } from "../../utils/fetchData"
 import { GLOBALTYPES } from "../../redux/actions/globalType"
 import { useHistory, useParams } from 'react-router'
-import { addUser, getConversations } from "../../redux/actions/messageAction"
+import { MESS_TYPE, getConversations } from "../../redux/actions/messageAction"
 
 const LeftSide = () => {
 
@@ -38,7 +38,7 @@ const LeftSide = () => {
     const handleAddUser = (user) => {
         setSearch("")
         setSearchUsers([])
-        dispatch(addUser({ user, message }))
+        dispatch({ type: MESS_TYPE.ADD_USER, payload: { ...user, text: "", media: [] } })
         return history.push(`/message/${user._id}`)
     }
 

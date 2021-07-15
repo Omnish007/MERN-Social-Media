@@ -13,7 +13,7 @@ const spawnNotification = (body, icon, url, title) => {
 
     let n = new Notification(title, options)
 
-    n.onclick = e =>{
+    n.onclick = e => {
         e.preventDefault()
         window.open(url, "_blank")
     }
@@ -34,7 +34,7 @@ const SocketClient = () => {
     //likes
     useEffect(() => {
         socket.on("likeToClient", newPost => {
-            dispatch({type: POST_TYPES.UPDATE_POSTS, payload: newPost})
+            dispatch({ type: POST_TYPES.UPDATE_POSTS, payload: newPost })
         })
 
         return () => socket.off("likeToClient")
@@ -43,7 +43,7 @@ const SocketClient = () => {
     // unlike 
     useEffect(() => {
         socket.on("unLikeToClient", newPost => {
-            dispatch({type: POST_TYPES.UPDATE_POSTS, payload: newPost})
+            dispatch({ type: POST_TYPES.UPDATE_POSTS, payload: newPost })
         })
 
         return () => socket.off("unLikeToClient")
@@ -52,16 +52,16 @@ const SocketClient = () => {
     // createComment
     useEffect(() => {
         socket.on("createCommentToClient", newPost => {
-            dispatch({type: POST_TYPES.UPDATE_POSTS, payload: newPost})
+            dispatch({ type: POST_TYPES.UPDATE_POSTS, payload: newPost })
         })
 
         return () => socket.off("createCommentToClient")
     }, [socket, dispatch])
-    
+
     // deleteComment
     useEffect(() => {
         socket.on("deleteCommentToClient", newPost => {
-            dispatch({type: POST_TYPES.UPDATE_POSTS, payload: newPost})
+            dispatch({ type: POST_TYPES.UPDATE_POSTS, payload: newPost })
         })
 
         return () => socket.off("deleteCommentToClient")
@@ -70,7 +70,7 @@ const SocketClient = () => {
     // follow
     useEffect(() => {
         socket.on("followToClient", newUser => {
-            dispatch({type: GLOBALTYPES.AUTH, payload: {...auth , user: newUser}})
+            dispatch({ type: GLOBALTYPES.AUTH, payload: { ...auth, user: newUser } })
         })
 
         return () => socket.off("followToClient")
@@ -79,7 +79,7 @@ const SocketClient = () => {
     // unfollow
     useEffect(() => {
         socket.on("unFollowToClient", newUser => {
-            dispatch({type: GLOBALTYPES.AUTH, payload: {...auth , user: newUser}})
+            dispatch({ type: GLOBALTYPES.AUTH, payload: { ...auth, user: newUser } })
         })
 
         return () => socket.off("unFollowToClient")
@@ -88,9 +88,9 @@ const SocketClient = () => {
     //notification
     useEffect(() => {
         socket.on("createNotifyToClient", msg => {
-            dispatch({type: NOTIFY_TYPES.CREATE_NOTIFY, payload: msg})
+            dispatch({ type: NOTIFY_TYPES.CREATE_NOTIFY, payload: msg })
 
-            if(notify.sound) audioRef.current.play()
+            if (notify.sound) audioRef.current.play()
 
             spawnNotification(
                 msg.user.username + " " + msg.text,
@@ -106,7 +106,7 @@ const SocketClient = () => {
     //remove notification
     useEffect(() => {
         socket.on("removeNotifyToClient", msg => {
-            dispatch({type: NOTIFY_TYPES.REMOVE_NOTIFY, payload: msg})
+            dispatch({ type: NOTIFY_TYPES.REMOVE_NOTIFY, payload: msg })
         })
 
         return () => socket.off("removeNotifyToClient")
@@ -115,18 +115,31 @@ const SocketClient = () => {
     //add message
     useEffect(() => {
         socket.on("addMessageToClient", msg => {
-            dispatch({type:MESS_TYPE.ADD_MESSAGE, payload: msg})
+            dispatch({ type: MESS_TYPE.ADD_MESSAGE, payload: msg })
+
+            dispatch({
+                type: MESS_TYPE.ADD_USER,
+                payload: {
+                    ...msg.user,
+                    text: msg.text,
+                    media: msg.media
+                }
+            })
         })
 
         return () => socket.off("addMessageToClient")
     }, [socket, dispatch])
 
+    //check online offline status
+    useEffect(() => {
+        socket.emit("checkUserOnline", auth.user)
+    }, [socket, auth.user])
 
 
     return (
         <>
-            <audio controls ref={audioRef} style={{display:"none"}}>
-                <source src={audiobell} type="audio/mp3"/>
+            <audio controls ref={audioRef} style={{ display: "none" }}>
+                <source src={audiobell} type="audio/mp3" />
             </audio>
         </>
     )

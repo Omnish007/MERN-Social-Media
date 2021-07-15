@@ -8,19 +8,15 @@ export const MESS_TYPE = {
     GET_MESSAGES: "GET_MESSAGES",
     UPDATE_MESSAGES: "UPDATE_MESSAGES",
     DELETE_MESSAGES: "DELETE_MESSAGES",
-}
-
-export const addUser = ({ user, message }) => (dispatch) => {
-    if (message.users.every(item => item._id !== user._id)) {
-        dispatch({ type: MESS_TYPE.ADD_USER, payload: { ...user, text: "", media: [] } })
-    }
+    DELETE_CONVERSATION: "DELETE_CONVERSATION",
 }
 
 export const addMessage = ({ msg, auth, socket }) => async (dispatch) => {
     dispatch({ type: MESS_TYPE.ADD_MESSAGE, payload: msg })
 
     // socket
-    socket.emit("addMessage", msg)
+    const { _id, avatar, fullname, username } = auth.user
+    socket.emit("addMessage", { ...msg, user: { _id, avatar, fullname, username } })
 
     try {
 
@@ -81,7 +77,7 @@ export const loadMoreMessages = ({ auth, id, page = 1 }) => async (dispatch) => 
 
         const res = await getDataAPI(`message/${id}?limit=${page * 9}`, auth.token)
         const newData = { ...res.data, messages: res.data.messages.reverse() }
-        
+
         dispatch({ type: MESS_TYPE.UPDATE_MESSAGES, payload: { ...newData, _id: id, page } })
 
 
@@ -91,14 +87,28 @@ export const loadMoreMessages = ({ auth, id, page = 1 }) => async (dispatch) => 
 
 }
 
-export const deleteMessages = ({msg, data, auth}) => async (dispatch) => {
+export const deleteMessages = ({ msg, data, auth }) => async (dispatch) => {
 
     const newData = DeleteData(data, msg._id)
-    dispatch({type:MESS_TYPE.DELETE_MESSAGES, payload: {newData, _id:msg.recipient}})
+    dispatch({ type: MESS_TYPE.DELETE_MESSAGES, payload: { newData, _id: msg.recipient } })
 
     try {
 
         await deleteDataAPI(`message/${msg._id}`, auth.token)
+
+    } catch (error) {
+        dispatch({ type: GLOBALTYPES.ALERT, payload: { error: error.response.data.msg } })
+    }
+
+}
+
+export const deleteConversation = ({ auth, id }) => async (dispatch) => {
+
+    dispatch({ type: MESS_TYPE.DELETE_CONVERSATION, payload: id })
+
+    try {
+
+        await deleteDataAPI(`conversation/${id}`, auth.token)
 
     } catch (error) {
         dispatch({ type: GLOBALTYPES.ALERT, payload: { error: error.response.data.msg } })
