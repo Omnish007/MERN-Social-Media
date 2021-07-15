@@ -6,7 +6,7 @@ const onlineReducer = (state = [], action) => {
         case GLOBALTYPES.ONLINE:
             return [...state, action.payload]
 
-        case GLOBALTYPES.ONLINE:
+        case GLOBALTYPES.OFFLINE:
             return state.filter(item => item !== action.payload)
 
         default:

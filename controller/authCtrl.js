@@ -59,7 +59,7 @@ const authCtrl = {
             const { email, password } = req.body
 
             const user = await Users.findOne({email})
-            .populate("followers following", "-password")
+            .populate("followers following", "avatar username fullname followers following")
 
             if(!user) return res.status(400).json({msg: "This email does not exist"}) 
 
@@ -110,7 +110,7 @@ const authCtrl = {
                 if(err) return res.status(400).json({msg: "Please Login"})
 
                 const user = await Users.findById(result.id).select("-password")
-                .populate("followers following", "-password")
+                .populate("followers following", "avatar username fullname followers following")
 
                 if(!user) return res.status(400).json({msg: "This is not exist"})
 

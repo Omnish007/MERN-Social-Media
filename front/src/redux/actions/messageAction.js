@@ -9,6 +9,7 @@ export const MESS_TYPE = {
     UPDATE_MESSAGES: "UPDATE_MESSAGES",
     DELETE_MESSAGES: "DELETE_MESSAGES",
     DELETE_CONVERSATION: "DELETE_CONVERSATION",
+    CHECK_ONLINE_OFFLINE: "CHECK_ONLINE_OFFLINE"
 }
 
 export const addMessage = ({ msg, auth, socket }) => async (dispatch) => {

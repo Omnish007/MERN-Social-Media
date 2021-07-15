@@ -5,10 +5,11 @@ import { getDataAPI } from "../../utils/fetchData"
 import { GLOBALTYPES } from "../../redux/actions/globalType"
 import { useHistory, useParams } from 'react-router'
 import { MESS_TYPE, getConversations } from "../../redux/actions/messageAction"
+import { on } from 'nodemon'
 
 const LeftSide = () => {
 
-    const { auth, message } = useSelector(state => state)
+    const { auth, message, online } = useSelector(state => state)
     const dispatch = useDispatch()
 
     const [search, setSearch] = useState("")
@@ -76,6 +77,15 @@ const LeftSide = () => {
     }, [message.resultUser, page, auth, dispatch])
 
 
+    //check user is online or offline
+    useEffect(() => {
+
+        if(message.firstLoad){
+            dispatch({type:MESS_TYPE.CHECK_ONLINE_OFFLINE, payload: online})
+        }
+
+    }, [online, message.firstLoad, dispatch])
+
     return (
         <>
             <form className="message_header" onSubmit={handleSearch}>
@@ -105,7 +115,12 @@ const LeftSide = () => {
                                     <div key={user._id} className={`message_user ${isActive(user)}`}
                                         onClick={() => handleAddUser(user)}>
                                         <UserCard user={user} msg={true}>
-                                            <i className="fas fa-circle" />
+                                            {
+                                                user.online
+                                                ?<i className="fas fa-circle text-success" />
+                                                :<i className="fas fa-circle" />
+                                            }
+                                            
                                         </UserCard>
                                     </div>
                                 ))

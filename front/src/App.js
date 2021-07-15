@@ -23,7 +23,6 @@ import io from "socket.io-client"
 import { GLOBALTYPES } from "./redux/actions/globalType";
 import SocketClient from "./SocketClient"
 
-// 41 21
 
 function App() {
 
